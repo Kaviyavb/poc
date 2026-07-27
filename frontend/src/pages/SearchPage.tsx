@@ -25,6 +25,10 @@ function SearchPage() {
     setError(null);
 
     try {
+      console.log('DEBUG frontend request params', {
+        prescriber_name: prescriberName.trim(),
+      });
+
       const response = await api.get<PrescriberSearchResponse>('/prescriber-search', {
         params: {
           prescriber_name: prescriberName.trim(),

@@ -10,10 +10,19 @@ router = APIRouter()
 
 @router.get("/prescriber-search")
 async def prescriber_search(request: Request, prescriber_name: str):
-    employee_email = (
-        request.headers.get("x-forwarded-email")
-        or os.getenv("LOCAL_TEST_EMAIL")
+    forwarded_email = request.headers.get("x-forwarded-email")
+    local_test_email = os.getenv("LOCAL_TEST_EMAIL")
+
+    print(f"DEBUG x-forwarded-email header: {forwarded_email!r}")
+    print(f"DEBUG LOCAL_TEST_EMAIL: {local_test_email!r}")
+
+    employee_email = forwarded_email or local_test_email
+    print(f"DEBUG resolved employee_email: {employee_email!r}")
+    print(
+        "DEBUG employee_email is None/empty: "
+        f"{employee_email is None or not str(employee_email).strip()}"
     )
+    print(f"DEBUG received prescriber_name: {prescriber_name!r}")
 
     if employee_email is None:
         raise HTTPException(
@@ -45,8 +54,13 @@ async def prescriber_search(request: Request, prescriber_name: str):
     LIMIT 20
     """
 
+    print(f"DEBUG SQL filter employee_email: {employee_email!r}")
+    print("DEBUG full SQL query:")
+    print(query)
+
     try:
         results = await db.execute(query)
+        print(f"DEBUG rows returned: {len(results)}")
 
         if not results:
             return {
