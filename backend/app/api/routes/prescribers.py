@@ -2,7 +2,7 @@ import os
 
 from fastapi import APIRouter, HTTPException, Request
 
-from ...core.config import CATALOG, SCHEMA, TABLE
+from ...core.config import CATALOG, LOCAL_TEST_EMAIL, SCHEMA, TABLE
 from ...services.databricks_client import db
 
 router = APIRouter()
@@ -11,13 +11,15 @@ router = APIRouter()
 @router.get("/prescriber-search")
 async def prescriber_search(request: Request, prescriber_name: str):
     forwarded_email = request.headers.get("x-forwarded-email")
-    local_test_email = os.getenv("LOCAL_TEST_EMAIL")
+    local_test_email = os.getenv("LOCAL_TEST_EMAIL") or LOCAL_TEST_EMAIL
 
+    print(f"DEBUG request.headers: {dict(request.headers)}")
     print(f"DEBUG x-forwarded-email header: {forwarded_email!r}")
     print(f"DEBUG LOCAL_TEST_EMAIL: {local_test_email!r}")
 
-    employee_email = forwarded_email or local_test_email
+    employee_email = (forwarded_email or local_test_email or "").strip() or None
     print(f"DEBUG resolved employee_email: {employee_email!r}")
+
     print(
         "DEBUG employee_email is None/empty: "
         f"{employee_email is None or not str(employee_email).strip()}"
