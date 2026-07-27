@@ -10,15 +10,21 @@ router = APIRouter()
 
 @router.get("/prescriber-search")
 async def prescriber_search(request: Request, prescriber_name: str):
-    forwarded_email = request.headers.get("x-forwarded-email")
+    forwarded_email = (
+        request.headers.get("x-forwarded-email")
+        or request.headers.get("x-forwarded-preferred-username")
+        or request.headers.get("x-databricks-user-email")
+        or request.headers.get("x-user-email")
+    )
     local_test_email = os.getenv("LOCAL_TEST_EMAIL") or LOCAL_TEST_EMAIL
 
     print(f"DEBUG request.headers: {dict(request.headers)}")
-    print(f"DEBUG x-forwarded-email header: {forwarded_email!r}")
+    print(f"DEBUG extracted forwarded_email: {forwarded_email!r}")
     print(f"DEBUG LOCAL_TEST_EMAIL: {local_test_email!r}")
 
     employee_email = (forwarded_email or local_test_email or "").strip() or None
-    print(f"DEBUG resolved employee_email: {employee_email!r}")
+    print(f"DEBUG final resolved employee_email: {employee_email!r}")
+
 
     print(
         "DEBUG employee_email is None/empty: "
