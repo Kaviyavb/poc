@@ -12,29 +12,21 @@ import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 
 interface SearchFormProps {
-  employeeEmail: string;
   prescriberName: string;
   isSubmitting: boolean;
-  onEmployeeEmailChange: (value: string) => void;
   onPrescriberNameChange: (value: string) => void;
   onSubmit: () => void;
   onClear: () => void;
 }
 
 function SearchForm({
-  employeeEmail,
   prescriberName,
   isSubmitting,
-  onEmployeeEmailChange,
   onPrescriberNameChange,
   onSubmit,
   onClear,
 }: SearchFormProps) {
-  const isValid = useMemo(() => {
-    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(employeeEmail.trim());
-    const nameValid = prescriberName.trim().length >= 2;
-    return emailValid && nameValid;
-  }, [employeeEmail, prescriberName]);
+  const isValid = useMemo(() => prescriberName.trim().length >= 2, [prescriberName]);
 
   return (
     <Card elevation={0} sx={{ borderRadius: 4, border: '1px solid', borderColor: 'divider' }}>
@@ -43,21 +35,10 @@ function SearchForm({
           Search Prescriber Information
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          Enter the employee email and prescriber name to retrieve the relevant profile.
+          Enter the prescriber name to retrieve the relevant profile.
         </Typography>
 
         <Stack spacing={2.5}>
-          <TextField
-            label="Employee Email"
-            fullWidth
-            value={employeeEmail}
-            onChange={(event) => onEmployeeEmailChange(event.target.value)}
-            placeholder="name@company.com"
-            required
-            error={employeeEmail.trim().length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(employeeEmail.trim())}
-            helperText={employeeEmail.trim().length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(employeeEmail.trim()) ? 'Enter a valid email address' : ' '}
-          />
-
           <TextField
             label="Prescriber Name"
             fullWidth

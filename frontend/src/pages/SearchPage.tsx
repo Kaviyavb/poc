@@ -15,7 +15,6 @@ import api from '../services/api';
 import type { PrescriberResult, PrescriberSearchResponse } from '../types';
 
 function SearchPage() {
-  const [employeeEmail, setEmployeeEmail] = useState('');
   const [prescriberName, setPrescriberName] = useState('');
   const [results, setResults] = useState<PrescriberResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +27,6 @@ function SearchPage() {
     try {
       const response = await api.get<PrescriberSearchResponse>('/prescriber-search', {
         params: {
-          employee_email: employeeEmail.trim(),
           prescriber_name: prescriberName.trim(),
         },
       });
@@ -47,7 +45,6 @@ function SearchPage() {
   };
 
   const handleClear = () => {
-    setEmployeeEmail('');
     setPrescriberName('');
     setResults([]);
     setError(null);
@@ -68,10 +65,8 @@ function SearchPage() {
           </Box>
 
           <SearchForm
-            employeeEmail={employeeEmail}
             prescriberName={prescriberName}
             isSubmitting={isLoading}
-            onEmployeeEmailChange={setEmployeeEmail}
             onPrescriberNameChange={setPrescriberName}
             onSubmit={handleSearch}
             onClear={handleClear}
