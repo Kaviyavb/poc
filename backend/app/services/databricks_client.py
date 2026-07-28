@@ -28,7 +28,18 @@ class DatabricksClient:
                 json=payload,
                 headers=self.headers,
             )
-            response.raise_for_status()
+            if response.is_error:
+                detail = response.text
+                try:
+                    body = response.json()
+                    detail = body.get("message") or body.get("error") or detail
+                except ValueError:
+                    pass
+                raise httpx.HTTPStatusError(
+                    f"Databricks SQL API error ({response.status_code}): {detail}",
+                    request=response.request,
+                    response=response,
+                )
             data = response.json()
 
             columns = [col["name"] for col in data["manifest"]["schema"]["columns"]]
