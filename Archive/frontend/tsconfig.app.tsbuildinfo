@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/components/footer.tsx","./src/components/header.tsx","./src/components/prescribercard.tsx","./src/components/searchform.tsx","./src/hooks/usehealthstatus.ts","./src/pages/searchpage.tsx","./src/services/api.ts","./src/types/index.ts","./src/utils/medicineparser.ts"],"version":"5.9.3"}
